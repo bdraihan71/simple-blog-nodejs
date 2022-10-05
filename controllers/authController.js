@@ -5,7 +5,7 @@ const User = require('../models/User')
 const errorFormatter = require('../utils/validationErrorFormatter')
 
 exports.signupGetController = (req, res, next) => {
-    res.render('pages/auth/signup.ejs', {
+    res.render('pages/auth/signup', {
         title: 'Create A New Account',
         error: {},
         value: {}
@@ -17,7 +17,7 @@ exports.signupPostController = async(req, res, next) => {
 
     let errors = validationResult(req).formatWith(errorFormatter)
     if(!errors.isEmpty()){
-        return res.render('pages/auth/signup.ejs', {
+        return res.render('pages/auth/signup', {
             title: 'Create A New Account',
             error: errors.mapped(),
             value: {
@@ -37,8 +37,10 @@ exports.signupPostController = async(req, res, next) => {
         })
 
         let createduser = await user.save()
-        res.render('pages/auth/signup.ejs', {
-            title: 'Create A New Account'
+        res.render('pages/auth/signup', {
+            title: 'Create A New Account',
+            error: {},
+            value: {}
         })
     }catch (e) {
         console.log(e)
@@ -48,14 +50,26 @@ exports.signupPostController = async(req, res, next) => {
 }
 
 exports.loginGetController = (req, res, next) => {
-    res.render('pages/auth/login.ejs', {
-        title: 'Login to Your Account'
+    res.render('pages/auth/login', {
+        title: 'Login to Your Account',
+        error:{},
+        value: {}
     })
 }
 
 exports.loginPostController = async(req, res, next) => {
     let { email, password} = req.body
-    console.log(req.body)
+
+    let errors = validationResult(req).formatWith(errorFormatter)
+    if(!errors.isEmpty()){
+        return res.render('pages/auth/login', {
+            title: 'Login to Your Account',
+            error: errors.mapped(),
+            value: {
+                email
+            }
+        })
+    }
 
     try {
         let user = await User.findOne({email})
@@ -71,9 +85,13 @@ exports.loginPostController = async(req, res, next) => {
                 message: 'Invalid Credential'
             })
         }
+
+        res.setHeader
         console.log('Successfully Logged In', user )
-        res.render('pages/auth/login.ejs', {
-            title: 'Login to Your Account'
+        res.render('pages/auth/login', {
+            title: 'Login to Your Account',
+            error: {},
+            value: {}
         })
     }catch (e) {
         console.log(e)
