@@ -17,3 +17,7 @@ footer {
     text-align: center;
     padding: 20px 0;
 }
+
+.my-container{
+    height: 100vh;
+}
