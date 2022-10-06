@@ -85,17 +85,29 @@ exports.loginPostController = async(req, res, next) => {
                 message: 'Invalid Credential'
             })
         }
-
-        res.setHeader
-        console.log('Successfully Logged In', user )
-        res.render('pages/auth/login', {
-            title: 'Login to Your Account',
-            error: {},
-            value: {}
+        req.session.isLoggedIn = true
+        req.session.user = user
+        req.session.save(err => {
+            if(err){
+                console.log(err)
+                return next(err)
+            }
+            res.redirect('/dashboard')
         })
+        
     }catch (e) {
         console.log(e)
         next(e)
     }
     
+}
+
+exports.logoutController = (req, res, next) => {
+    req.session.destroy( err => {
+        if(err){
+            console.log(err)
+            return next(err)
+        }
+        return res.redirect('/auth/login')
+    })
 }
